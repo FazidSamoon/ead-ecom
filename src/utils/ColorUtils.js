@@ -1,0 +1,6 @@
+export const BASIC_COLORS = {
+    PRIMARY : "#CB997E",
+    SECONDARY: "#FFE8D6",
+    TERTIARY: "#FFE8D6",
+    FONT_PRIMARY: "#6B705C"
+}

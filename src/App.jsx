@@ -1,10 +1,13 @@
 import "./App.css";
+import Layout from "./components/organisms/layout/Layout";
 import ViewIndex from "./pages";
 
 function App() {
   return (
     <>
-      <ViewIndex />
+      <Layout>
+        <ViewIndex />
+      </Layout>
     </>
   );
 }
