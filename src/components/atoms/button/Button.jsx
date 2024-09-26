@@ -8,12 +8,14 @@ const Button = ({
   onClick,
   buttonType = "primary",
   buttonStyles,
+  type,
 }) => {
   return (
     <BootstrapButton
       variant={buttonType}
       onClick={onClick}
       style={{ ...buttonStyles }}
+      type={type}
     >
       {startIcon && <span className="me-2">{startIcon}</span>} {title}
       {endIcon && <span className="ms-2">{endIcon}</span>}
@@ -38,6 +40,7 @@ Button.propTypes = {
     "link",
   ]),
   buttonStyles: PropTypes.object,
+  type: PropTypes.string,
 };
 
 export default Button;

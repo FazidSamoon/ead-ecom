@@ -1,51 +1,62 @@
+import { useState } from "react";
 import Button from "../../atoms/button/Button";
 import Icon from "../../atoms/icon/Icon";
 import CommonTable from "../commonTable/CommonTable";
-import PeopleFilter from "../peopleFilters/PeopleFilter";
 import PeopleSort from "../peopleFilters/PeopleSort";
+import UserManagementModalController from "../userManagementModalController/UserManagementModalController";
 
 const UserManagementTable = () => {
+  const [openModal, setOpenModal] = useState(false);
+  const [modalContext, setModalContext] = useState(null);
+  const [selectedResource, setSelectedResource] = useState(null);
+
   const headers = [
-    { label: "Name", key: "name" },
+    { label: "Name", key: "firstName" },
     { label: "Age", key: "age" },
     { label: "City", key: "city" },
     { label: "Occupation", key: "occupation" },
     { label: "Actions", key: "actions" },
   ];
 
-  const renderActionButtons = () => {
+  const renderActionButtons = (row) => {
     return (
-      <div className=" d-flex gap-1">
+      <div className="d-flex gap-1">
         <Button
           title="Edit"
           className="btn btn-primary btn-sm me-2"
-          onClick={(e) => handleActionClick(e, "view", "John Doe")}
-          buttonType={"secondary"}
-          endIcon={<Icon iconName={"Pencil"} />}
+          onClick={(e) => handleActionClick(e, "edit", row)}
+          buttonType="secondary"
+          endIcon={<Icon iconName="Pencil" />}
         />
         <Button
           title="Delete"
           className="btn btn-danger btn-sm"
-          onClick={(e) => handleActionClick(e, "remove", "John Doe")}
-          buttonType={"danger"}
-          endIcon={<Icon iconName={"Pencil"} />}
+          onClick={(e) => handleActionClick(e, "delete", row)}
+          buttonType="danger"
+          endIcon={<Icon iconName="Trash" />}
         />
       </div>
     );
   };
 
-  const handleActionClick = (event, action, name) => {
+  const handleActionClick = (event, action, row) => {
     event.stopPropagation();
-    if (action === "view") {
-      alert(`View clicked for ${name}`);
-    } else if (action === "remove") {
-      alert(`Remove clicked for ${name}`);
+    if (action === "edit") {
+      setModalContext("EDIT_RESOURCE");
+      setSelectedResource(row); // Set the selected resource for editing
+      setOpenModal(true);
+    } else if (action === "delete") {
+      setModalContext("DELETE_RESOURCE");
+      setSelectedResource(row); // Set the selected resource for deletion
+      setOpenModal(true);
     }
   };
+
+
   const rows = [
     {
       id: 1,
-      name: "John Doe",
+      firstName: "John Doe",
       age: 30,
       city: "New York",
       occupation: "Software Engineer",
@@ -53,7 +64,7 @@ const UserManagementTable = () => {
     },
     {
       id: 2,
-      name: "Jane Smith",
+      firstName: "Jane Smith",
       age: 28,
       city: "London",
       occupation: "Designer",
@@ -61,13 +72,18 @@ const UserManagementTable = () => {
     },
     {
       id: 3,
-      name: "Sam Johnson",
+      firstName: "Sam Johnson",
       age: 35,
       city: "San Francisco",
       occupation: "Product Manager",
       actions: renderActionButtons(),
     },
   ];
+
+  const tableRows = rows.map((row) => ({
+    ...row,
+    actions: renderActionButtons(row),
+  }));
 
   const handleRowClick = (row) => {
     console.log(row);
@@ -76,13 +92,30 @@ const UserManagementTable = () => {
 
   return (
     <div className=" mt-5">
-      <span className=" h5 mb-2">All Employee Data</span>
+      <div className=" d-flex justify-content-between align-items-center mb-2">
+        <span className=" h5 mb-2">All Employee Data</span>
+        <Button
+          title="Add New Resource"
+          onClick={() => {
+            setModalContext("ADD_NEW_RESOURCE");
+            setOpenModal(true);
+          }}
+        />
+      </div>
+
       <CommonTable
         tableHeaders={headers}
-        tableRows={rows}
+        tableRows={tableRows}
         onRowClick={handleRowClick}
         sort={<PeopleSort />}
-        filter={<PeopleFilter />}
+      />
+
+      <UserManagementModalController
+        isOpen={openModal}
+        modalContext={modalContext}
+        setModalContext={setModalContext}
+        setOpenModal={setOpenModal}
+        resourceData={selectedResource}
       />
     </div>
   );

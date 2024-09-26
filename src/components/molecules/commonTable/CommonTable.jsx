@@ -4,8 +4,8 @@ const CommonTable = ({ tableHeaders, tableRows, onRowClick, sort, filter }) => {
   return (
     <div className="table-responsive">
       <div className=" d-flex justify-content-between">
-        <div className=" px-2">{sort}</div>
-        <div className=" px-2">{filter}</div>
+        <div className="">{sort}</div>
+        <div className="">{filter}</div>
       </div>
       <table className="table  table-hover shadow-sm">
         <thead className="thead-light">

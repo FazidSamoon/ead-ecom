@@ -13,7 +13,7 @@ const sideNavData = [
     id: "2",
     title: "User Management",
     icon: <i className="bi bi-people-fill" />,
-    url: "/customer/view",
+    url: "/users",
   },
   {
     id: "1",
