@@ -19,7 +19,7 @@ const sideNavData = [
     id: "1",
     title: "Product Management",
     icon: <i className="bi bi-cart-dash-fill" />,
-    url: "/stats",
+    url: "/products",
   },
   {
     id: "1",

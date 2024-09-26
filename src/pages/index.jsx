@@ -6,6 +6,7 @@ import Layout from "../components/organisms/layout/Layout";
 import UnAuthorized from "../components/organisms/unauthorized/unAuthorized";
 import UserManagementHome from "./UserManagementViews/UserManagementHome/UserManagementHome";
 import { useEffect } from "react";
+import ProductHome from "./ProductHome/ProductHome";
 
 const index = () => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -29,7 +30,15 @@ const index = () => {
 
               <Route
                 path="/users/"
-                element={user && isAdmin ? <UserManagementHome /> : <UnAuthorized />}
+                element={
+                  user && isAdmin ? <UserManagementHome /> : <UnAuthorized />
+                }
+              />
+              <Route
+                path="/products/"
+                element={
+                  user && isAdmin ? <ProductHome /> : <UnAuthorized />
+                }
               />
             </>
           ) : (
