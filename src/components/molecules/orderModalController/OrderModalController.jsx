@@ -3,9 +3,8 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from "react-bootstrap";
 import { X } from "react-bootstrap-icons";
 
 import Button from "../../atoms/button/Button";
-import ProductForms from "../addEditProductModal/ProductForms";
-
-const ProductModalController = ({
+import OrderForms from "../OrderForms/OrderForms";
+const OrderModalController = ({
   isOpen,
   modalContext,
   resourceData = {},
@@ -16,19 +15,18 @@ const ProductModalController = ({
 }) => {
   const getTitle = () => {
     switch (modalContext) {
-      case "ADD_NEW_PRODUCT":
-        return "Add New Product";
-      case "EDIT_PRODUCT":
-        return "Edit Product";
-      case "DELETE_PRODUCT":
-        return "Are You Sure You Want to Delete Product?";
-      case "VIEW_PRODUCT":
-        return resourceData?.productName ?? "";
+      case "ADD_NEW_ORDER":
+        return "Add New Order";
+      case "EDIT_ORDER":
+        return "Edit Order";
+      case "DELETE_ORDER":
+        return "Are You Sure You Want to Delete Order?";
+      case "VIEW_ORDER":
+        return resourceData?.orderId ?? "";
       default:
         return "";
     }
   };
-
   return (
     <Modal
       show={isOpen}
@@ -59,22 +57,22 @@ const ProductModalController = ({
         </ModalHeader>
       </div>
       <ModalBody>
-        {["ADD_NEW_PRODUCT", "EDIT_PRODUCT"].includes(modalContext) && (
-          <ProductForms
+        {["ADD_NEW_ORDER", "EDIT_ORDER"].includes(modalContext) && (
+          <OrderForms
             modalContext={modalContext}
             onCancel={onCancel}
             resourceData={resourceData}
           />
         )}
 
-        {modalContext === "DELETE_PRODUCT" && (
+        {modalContext === "DELETE_ORDER" && (
           <div className="text-center">
-            <span>Are you sure you want to delete this product?</span>
+            <span>Are you sure you want to delete this order?</span>
           </div>
         )}
       </ModalBody>
 
-      {modalContext === "DELETE_PRODUCT" && (
+      {modalContext === "DELETE_ORDER" && (
         <ModalFooter>
           <Button buttonType="danger" onClick={onDelete} title="Delete" />
           <Button buttonType="secondary" onClick={onCancel} title="Cancel" />
@@ -84,13 +82,13 @@ const ProductModalController = ({
   );
 };
 
-ProductModalController.propTypes = {
+OrderModalController.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   modalContext: PropTypes.oneOf([
     "ADD_NEW_PRODUCT",
     "EDIT_PRODUCT",
     "DELETE_RESOURCE",
-    "VIEW_PRODUCT"
+    "VIEW_PRODUCT",
   ]).isRequired,
   resourceData: PropTypes.object,
   onDelete: PropTypes.func,
@@ -98,4 +96,4 @@ ProductModalController.propTypes = {
   setOpenModal: PropTypes.func.isRequired,
   setModalContext: PropTypes.func.isRequired,
 };
-export default ProductModalController;
+export default OrderModalController;

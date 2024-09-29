@@ -25,7 +25,7 @@ const sideNavData = [
     id: "1",
     title: "Order Management",
     icon: <i className="bi bi-credit-card-2-back-fill" />,
-    url: "/stats",
+    url: "/orders",
   },
   {
     id: "1",
