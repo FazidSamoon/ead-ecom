@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Sidenav from "../../molecules/sidenav/Sidenav";
 import { useLocation } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
 const Layout = () => {
   const location = useLocation();
@@ -22,6 +23,7 @@ const Layout = () => {
         }}
       >
         <Outlet />
+        <ToastContainer />
       </div>
     </div>
   );

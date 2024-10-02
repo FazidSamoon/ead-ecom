@@ -29,8 +29,16 @@ const productStatus = [
   { key: "reStock", value: "Restock" },
 ];
 
-
-
+const productValidationSchema = Yup.object().shape({
+  productName: Yup.string().required("Product Name is required"),
+  price: Yup.number()
+    .required("Price is required")
+    .positive("Price must be positive"),
+  inStock: Yup.boolean().required("Stock status is required"),
+  category: Yup.string().required("Category is required"),
+  vendor: Yup.string().required("Vendor is required"),
+  status: Yup.string().required("Status is required"),
+});
 
 const ProductForms = ({ resourceData, modalContext, onCancel }) => {
   const [images, setImages] = useState([]);

@@ -4,17 +4,31 @@ import Icon from "../../atoms/icon/Icon";
 import CommonTable from "../commonTable/CommonTable";
 import PeopleSort from "../peopleFilters/PeopleSort";
 import UserManagementModalController from "../userManagementModalController/UserManagementModalController";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 const UserManagementTable = () => {
   const [openModal, setOpenModal] = useState(false);
   const [modalContext, setModalContext] = useState(null);
   const [selectedResource, setSelectedResource] = useState(null);
 
+  const fetchUsers = async () => {
+    const { data } = await axios.get(
+      "https://ecommerceapp2-young-silence-7292.fly.dev/api/User/all"
+    );
+    return data;
+  };
+
+  // const {
+  //   data: users,
+  //   isLoading,
+  //   error,
+  // } = useQuery({ queryKey: ["users"], queryFn: fetchUsers });
   const headers = [
-    { label: "Name", key: "firstName" },
-    { label: "Age", key: "age" },
-    { label: "City", key: "city" },
-    { label: "Occupation", key: "occupation" },
+    { label: "Username", key: "username" },
+    { label: "Email", key: "email" },
+    { label: "Role", key: "role" },
+    { label: "Created At", key: "createdAt" },
     { label: "Actions", key: "actions" },
   ];
 
@@ -52,38 +66,14 @@ const UserManagementTable = () => {
     }
   };
 
-
-  const rows = [
-    {
-      id: 1,
-      firstName: "John Doe",
-      age: 30,
-      city: "New York",
-      occupation: "Software Engineer",
-      actions: renderActionButtons(),
-    },
-    {
-      id: 2,
-      firstName: "Jane Smith",
-      age: 28,
-      city: "London",
-      occupation: "Designer",
-      actions: renderActionButtons(),
-    },
-    {
-      id: 3,
-      firstName: "Sam Johnson",
-      age: 35,
-      city: "San Francisco",
-      occupation: "Product Manager",
-      actions: renderActionButtons(),
-    },
-  ];
-
-  const tableRows = rows.map((row) => ({
-    ...row,
-    actions: renderActionButtons(row),
-  }));
+  const tableRows = []
+    // users?.map((user) => ({
+    //   username: user?.username,
+    //   email: user?.email,
+    //   role: user?.role === 0 ? "User" : "Admin",
+    //   createdAt: new Date(user.createdAt)?.toLocaleDateString(),
+    //   actions: renderActionButtons(user),
+    // })) || [];
 
   const handleRowClick = (row) => {
     console.log(row);

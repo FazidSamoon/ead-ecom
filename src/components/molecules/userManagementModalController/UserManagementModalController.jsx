@@ -22,9 +22,9 @@ const genderOptions = [
 ];
 
 const roleOptions = [
-  { key: "admin", value: "Administrator" },
-  { key: "vendor", value: "Vendor" },
-  { key: "customer_service", value: "Customer Service Representative" },
+  { key: "0", value: "Administrator" },
+  { key: "1", value: "Vendor" },
+  { key: "2", value: "Customer Service Representative" },
 ];
 
 const resourceValidationSchema = Yup.object().shape({
@@ -99,12 +99,12 @@ const UserManagementModalController = ({
           modalContext === "EDIT_RESOURCE") && (
           <Formik
             initialValues={{
-              firstName: resourceData.firstName || "",
-              lastName: resourceData.lastName || "",
-              address: resourceData.address || "",
-              phoneNumber: resourceData.phoneNumber || "",
-              gender: resourceData.gender || "",
-              role: resourceData.role || "",
+              firstName: resourceData?.firstName || "",
+              lastName: resourceData?.lastName || "",
+              address: resourceData?.address || "",
+              phoneNumber: resourceData?.phoneNumber || "",
+              gender: resourceData?.gender || "",
+              role: resourceData?.role || "",
             }}
             validationSchema={resourceValidationSchema}
             onSubmit={(values) => onSubmit(values)}

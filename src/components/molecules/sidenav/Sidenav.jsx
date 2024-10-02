@@ -31,13 +31,13 @@ const sideNavData = [
     id: "1",
     title: "Inventory Management",
     icon: <i className="bi bi-shop" />,
-    url: "/stats",
+    url: "/inventory",
   },
   {
     id: "1",
     title: "Vender Management",
     icon: <i className="bi bi-person-raised-hand" />,
-    url: "/stats",
+    url: "/vendor",
   },
 ];
 

@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import InputField from "../../atoms/inputFIeld/InputField";
 import DropdownField from "../../atoms/dropDownField/DropdownField";
 import Button from "../../atoms/button/Button";
+import SearchableDropdown from "../../atoms/searchableDropdown/SearchableDropdown";
 
 const orderStatus = [
   { key: "PENDING", value: "Pending" },
@@ -15,16 +16,26 @@ const orderStatus = [
 const productValidationSchema = Yup.object().shape({
   customerName: Yup.string().required("Customer Name is required"),
   quantity: Yup.number()
-    .required("Price is required")
-    .positive("Price must be positive"),
-  customerPhone: Yup.boolean().required("Stock status is required"),
+    .required("Quantity is required")
+    .positive("Quantity must be positive"),
   category: Yup.string().required("Category is required"),
   vendor: Yup.string().required("Vendor is required"),
   status: Yup.string().required("Status is required"),
+  remark: Yup.string(),
 });
 
+const options = [
+  { key: 1, value: "Option 1" },
+  { key: 2, value: "Option 2" },
+  { key: 3, value: "Option 3" },
+  // Add more options here
+];
+
 const OrderForms = ({ resourceData, modalContext, onCancel }) => {
-  const onSubmit = () => {};
+  const onSubmit = (values) => {
+    console.log("hey")
+    console.log(values)
+  };
   return (
     <Formik
       initialValues={{
@@ -34,12 +45,14 @@ const OrderForms = ({ resourceData, modalContext, onCancel }) => {
         status: resourceData?.status || "",
         vendor: resourceData?.vendor || "",
         images: resourceData?.images || [],
+        remark: resourceData?.remark || "",
+        product: resourceData?.product || [],
       }}
-      validationSchema={productValidationSchema}
+    //   validationSchema={productValidationSchema}
       onSubmit={onSubmit}
       enableReinitialize={true}
     >
-      {({ handleSubmit }) => (
+      {({ handleSubmit, values, setFieldValue }) => (
         <FormikForm onSubmit={handleSubmit}>
           <Row>
             <Col md={12}>
@@ -47,6 +60,14 @@ const OrderForms = ({ resourceData, modalContext, onCancel }) => {
                 name="customerName"
                 label="Customer Name"
                 placeholder="Enter Customer name"
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col md={12}>
+              <SearchableDropdown
+                options={options}
+                onChange={setFieldValue}
               />
             </Col>
           </Row>
@@ -66,14 +87,6 @@ const OrderForms = ({ resourceData, modalContext, onCancel }) => {
                 placeholder="Enter Address"
               />
             </Col>
-
-            {/* <Col md={4}>
-              <DropdownField
-                name="status"
-                label="Status"
-                options={productStatus}
-              />
-            </Col> */}
           </Row>
           <Row>
             <Col md={6}>
@@ -91,12 +104,18 @@ const OrderForms = ({ resourceData, modalContext, onCancel }) => {
               />
             </Col>
           </Row>
-          {/* <ImageDropzone
-            name="images"
-            label="Product Images"
-            images={images}
-            setImages={setImages}
-          /> */}
+          {values.status === "Rejected" && modalContext === "EDIT_ORDER" && (
+            <Row>
+              <Col md={12}>
+                <InputField
+                  name="remark"
+                  label="Remark"
+                  placeholder="Enter Remark"
+                />
+              </Col>
+            </Row>
+          )}
+
           <ModalFooter>
             <Button
               type="submit"

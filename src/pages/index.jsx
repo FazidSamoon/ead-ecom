@@ -8,6 +8,8 @@ import UserManagementHome from "./UserManagementViews/UserManagementHome/UserMan
 import { useEffect } from "react";
 import ProductHome from "./ProductHome/ProductHome";
 import OrderHome from "./OrderHome/OrderHome";
+import InventoryHome from "./InventoryHome/InventoryHome";
+import VendorHome from "./VendorHome/VendorHome";
 
 const index = () => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -16,11 +18,11 @@ const index = () => {
   const user = true;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  useEffect(() => {
-    if (!user) {
-      navigate("/auth/login");
-    }
-  }, [navigate, user]);
+  // useEffect(() => {
+  //   if (!user) {
+  //     navigate("/auth/login");
+  //   }
+  // }, [navigate, user]);
   return (
     <div>
       <Routes>
@@ -37,15 +39,19 @@ const index = () => {
               />
               <Route
                 path="/products/"
-                element={
-                  user && isAdmin ? <ProductHome /> : <UnAuthorized />
-                }
+                element={user && isAdmin ? <ProductHome /> : <UnAuthorized />}
               />
               <Route
                 path="/orders/"
-                element={
-                  user && isAdmin ? <OrderHome /> : <UnAuthorized />
-                }
+                element={user && isAdmin ? <OrderHome /> : <UnAuthorized />}
+              />
+              <Route
+                path="/inventory/"
+                element={user && isAdmin ? <InventoryHome /> : <UnAuthorized />}
+              />
+              <Route
+                path="/vendor/"
+                element={user && isAdmin ? <VendorHome /> : <UnAuthorized />}
               />
             </>
           ) : (
@@ -56,20 +62,6 @@ const index = () => {
               </Route>
             </>
           )}
-
-          {/* <Route
-            path="/inventory/*"
-            element={
-              user?.otherDetails.staff.position === "INVENTORY MANAGER" ? (
-                <InventoryRoutes />
-              ) : (
-                <UnAuthorized />
-              )
-            }
-          /> */}
-          {/* <Route path="/customer/*" element={<CustomerRoutes />} />
-          <Route path="/menu/*" element={<MenuRoutes />} />
-          <Route path="/*" element={<FileNotFound />} /> */}
         </Route>
       </Routes>
     </div>
