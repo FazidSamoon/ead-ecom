@@ -51,7 +51,7 @@ const UserManagementStats = () => {
         </div>
       </div>
 
-      <div
+      {/* <div
         className="shadow rounded-2 p-3 d-flex align-items-center justify-content-center"
         style={{ width: "250px" }}
       >
@@ -60,7 +60,7 @@ const UserManagementStats = () => {
           <span className="h5 fw-normal">Total Users</span>
           <span className="h2 fw-bold">90</span>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -14,17 +14,21 @@ import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import DropdownField from "../../atoms/dropDownField/DropdownField";
 import { X } from "react-bootstrap-icons";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { generateRandomPassword } from "../../../utils/Common";
 
 const genderOptions = [
-  { key: "male", value: "Male" },
-  { key: "female", value: "Female" },
-  { key: "other", value: "Other" },
+  { key: "Male", value: 0 },
+  { key: "Female", value: 1 },
+  { key: "Other", value: 2 },
 ];
 
 const roleOptions = [
-  { key: "0", value: "Administrator" },
-  { key: "1", value: "Vendor" },
-  { key: "2", value: "Customer Service Representative" },
+  { key: "Administrator", value: 0 },
+  { key: "Vendor", value: 1 },
+  { key: "Customer Service Representative", value: 2 },
 ];
 
 const resourceValidationSchema = Yup.object().shape({
@@ -47,7 +51,38 @@ const UserManagementModalController = ({
   setOpenModal,
   setModalContext,
 }) => {
+  console.log(resourceData);
+  const createUsers = async (payload) => {
+    const response = await axios.post(
+      "https://ecommerceapp2-patient-thunder-9872.fly.dev/api/User/register",
+      payload
+    );
+    return response.data;
+  };
 
+  const updateUser = async (payload) => {
+    const response = await axios.put(
+      "https://ecommerceapp2-bold-dew-1540.fly.dev/api/User/" + resourceData?.id
+    );
+  };
+
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation({
+    mutationFn: async (userData) => {
+      return createUsers({
+        ...userData,
+        password: generateRandomPassword(),
+        username: userData.firstName + " " + userData.lastName,
+      });
+    },
+    onSuccess: async () => {
+      toast.success("Vendor successfully added");
+      await queryClient.invalidateQueries(["vendors"]);
+      setModalContext(null);
+      setOpenModal(false);
+    },
+  });
   const getTitle = () => {
     switch (modalContext) {
       case "ADD_NEW_RESOURCE":
@@ -62,7 +97,14 @@ const UserManagementModalController = ({
   };
 
   const onSubmit = (values) => {
-    alert(values.lastName);
+    if (modalContext === "ADD_NEW_RESOURCE") {
+      mutate({
+        ...values,
+        gender: Number(values.gender),
+        role: Number(values.role),
+      });
+    }
+    console.log(values);
   };
   return (
     <Modal
@@ -105,6 +147,8 @@ const UserManagementModalController = ({
               phoneNumber: resourceData?.phoneNumber || "",
               gender: resourceData?.gender || "",
               role: resourceData?.role || "",
+              email: resourceData?.email || "",
+              username: resourceData?.username || "",
             }}
             validationSchema={resourceValidationSchema}
             onSubmit={(values) => onSubmit(values)}
@@ -129,6 +173,11 @@ const UserManagementModalController = ({
                     />
                   </Col>
                 </Row>
+                <InputField
+                  name="email"
+                  label="Email"
+                  placeholder="Enter email"
+                />
                 <InputField
                   name="address"
                   label="Address"
@@ -208,6 +257,6 @@ UserManagementModalController.propTypes = {
   onDelete: PropTypes.func,
   onCancel: PropTypes.func.isRequired,
   setOpenModal: PropTypes.func.isRequired,
-  setModalContext: PropTypes.func.isRequired, 
+  setModalContext: PropTypes.func.isRequired,
 };
 export default UserManagementModalController;

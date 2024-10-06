@@ -51,26 +51,51 @@ const Sidenav = () => {
         <header>
           <a href="#">My App</a>
         </header>
-        <ul className="nav">
-          {sideNavData.map((sidenav, index) => (
+        <div style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          height: "100%",
+          paddingBottom: 60
+        }}>
+          <ul className="nav">
+            {sideNavData.map((sidenav, index) => (
+              <li
+                key={index}
+                style={{
+                  backgroundColor:
+                    selectedPath === sidenav.title ? "#50585c" : "",
+                }}
+              >
+                <div
+                  onClick={() => {
+                    setSelectedPath(sidenav.title);
+                    navigate(`${sidenav.url}`);
+                  }}
+                >
+                  {sidenav.icon} {sidenav.title}
+                </div>
+              </li>
+            ))}
+          </ul>
+
+          <ul className="nav">
             <li
-              key={index}
               style={{
-                backgroundColor:
-                  selectedPath === sidenav.title ? "#50585c" : "",
+                backgroundColor: "#50585c",
               }}
             >
               <div
                 onClick={() => {
-                  setSelectedPath(sidenav.title);
-                  navigate(`${sidenav.url}`);
+                  localStorage.clear()
+                  navigate("/auth/login")
                 }}
               >
-                {sidenav.icon} {sidenav.title}
+                SignOut
               </div>
             </li>
-          ))}
-        </ul>
+          </ul>
+        </div>
       </div>
     </div>
   );

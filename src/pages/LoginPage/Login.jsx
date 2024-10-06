@@ -26,6 +26,8 @@ const Login = () => {
     onSuccess: (data) => {
       console.log("Login successful", data);
       localStorage.setItem("user", data);
+      localStorage.setItem("userId", data.id);
+      localStorage.setItem("email", data.email);
       localStorage.setItem("role", data.role === 0 ? "admin" : data.role === 1 ? "vendor" : data.role === 2 ? "csr" : "customer" )
       navigation("/");
     },

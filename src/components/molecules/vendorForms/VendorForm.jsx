@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import * as Yup from "yup";
 import InputField from "../../atoms/inputFIeld/InputField";
 import axios from "axios";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { generateRandomPassword } from "../../../utils/Common";
 
@@ -16,7 +16,6 @@ const statusOptions = [
   { key: "DEACTIVATED", value: "Deactivated" },
 ];
 
-// Validation schema using Yup
 const vendorValidationSchema = Yup.object().shape({
   firstName: Yup.string().required("Vendor first name is required"),
   lastName: Yup.string().required("Vendor last name is required"),

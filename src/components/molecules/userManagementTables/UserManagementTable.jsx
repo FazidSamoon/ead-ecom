@@ -70,6 +70,8 @@ const UserManagementTable = () => {
     users?.map((user) => ({
       username: user?.username,
       email: user?.email,
+      firstName: user?.firstName,
+      lastName: user?.lastName,
       role: user?.role === 0 ? "User" : "Admin",
       createdAt: new Date(user.createdAt)?.toLocaleDateString(),
       actions: renderActionButtons(user),
