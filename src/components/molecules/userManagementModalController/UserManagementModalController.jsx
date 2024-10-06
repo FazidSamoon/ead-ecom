@@ -54,7 +54,7 @@ const UserManagementModalController = ({
   console.log(resourceData);
   const createUsers = async (payload) => {
     const response = await axios.post(
-      "https://ecommerceapp2-patient-thunder-9872.fly.dev/api/User/register",
+      "https://ecommerceapp2-floral-water-1036.fly.dev/api/User/register",
       payload
     );
     return response.data;

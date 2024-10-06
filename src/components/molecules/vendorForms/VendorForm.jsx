@@ -35,7 +35,7 @@ const VendorForm = ({
 }) => {
   const createVendor = async (payload) => {
     const response = await axios.post(
-      "https://ecommerceapp2-patient-thunder-9872.fly.dev/api/User/register",
+      "https://ecommerceapp2-floral-water-1036.fly.dev/api/User/register",
       payload
     );
     return response.data;
@@ -43,7 +43,7 @@ const VendorForm = ({
 
   const editVendor = async (payload) => {
     const response = await axios.post(
-      "https://ecommerceapp2-still-field-5715.fly.dev/api/Vendor/" +
+      "https://ecommerceapp2-floral-water-1036.fly.dev/api/Vendor/" +
         resourceData.id,
       payload
     );
