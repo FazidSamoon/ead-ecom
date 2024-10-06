@@ -26,7 +26,7 @@ const OrderManagementStats = () => {
         <Icon iconName="Basket" color="tomato" size={70} className="me-2" />
         <div className="d-flex flex-column align-items-center">
           <span className="h5 fw-normal">New Orders</span>
-          <span className="h2 fw-bold">{orders.length ?? 0}</span>
+          <span className="h2 fw-bold">{orders?.length ?? 0}</span>
         </div>
       </div>
 
@@ -38,7 +38,7 @@ const OrderManagementStats = () => {
         <div className="d-flex flex-column align-items-center">
           <span className="h5 fw-normal">Pending Today</span>
           <span className="h2 fw-bold">
-            {orders.filter((order) => order.status === 0).length}
+            {orders?.filter((order) => order?.status === 0).length}
           </span>
         </div>
       </div>
@@ -50,7 +50,7 @@ const OrderManagementStats = () => {
         <Icon iconName="PeopleFill" color="tomato" size={70} className="me-2" />
         <div className="d-flex flex-column align-items-center">
           <span className="h5 fw-normal">Cancelled</span>
-          <span className="h2 fw-bold">{orders.filter((order) => order.status === 4).length}</span>
+          <span className="h2 fw-bold">{orders?.filter((order) => order?.status === 4)?.length}</span>
         </div>
       </div>
     </div>
