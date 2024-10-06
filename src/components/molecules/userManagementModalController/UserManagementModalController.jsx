@@ -62,8 +62,11 @@ const UserManagementModalController = ({
 
   const updateUser = async (payload) => {
     const response = await axios.put(
-      "https://ecommerceapp2-bold-dew-1540.fly.dev/api/User/" + resourceData?.id
+      "https://ecommerceapp2-bold-dew-1540.fly.dev/api/User/" +
+        resourceData?.id,
+      payload
     );
+    return response.data;
   };
 
   const queryClient = useQueryClient();
@@ -74,6 +77,20 @@ const UserManagementModalController = ({
         ...userData,
         password: generateRandomPassword(),
         username: userData.firstName + " " + userData.lastName,
+      });
+    },
+    onSuccess: async () => {
+      toast.success("Vendor successfully added");
+      await queryClient.invalidateQueries(["vendors"]);
+      setModalContext(null);
+      setOpenModal(false);
+    },
+  });
+
+  const { mutate: updateMutate } = useMutation({
+    mutationFn: async (userData) => {
+      return updateUser({
+        ...userData,
       });
     },
     onSuccess: async () => {
@@ -99,6 +116,12 @@ const UserManagementModalController = ({
   const onSubmit = (values) => {
     if (modalContext === "ADD_NEW_RESOURCE") {
       mutate({
+        ...values,
+        gender: Number(values.gender),
+        role: Number(values.role),
+      });
+    } else {
+      updateMutate({
         ...values,
         gender: Number(values.gender),
         role: Number(values.role),
