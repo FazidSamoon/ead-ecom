@@ -1,6 +1,20 @@
 import Icon from "../../atoms/icon/Icon";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 
 const VendorStats = () => {
+
+  const fetchVendors = async () => {
+    const { data } = await axios.get(
+      "https://ecommerceapp2-patient-thunder-9872.fly.dev/api/Vendor"
+    );
+    return data;
+  };
+
+  const { data: vendors, isLoading } = useQuery({
+    queryKey: ["vendors"],
+    queryFn: fetchVendors,
+  });
   return (
     <div className="d-flex flex-wrap gap-3">
       <div
@@ -10,7 +24,9 @@ const VendorStats = () => {
         <Icon iconName="Basket" color="tomato" size={70} className="me-2" />
         <div className="d-flex flex-column align-items-center">
           <span className="h5 fw-normal">Total Vendors</span>
-          <span className="h2 fw-bold">90</span>
+          <span className="h2 fw-bold">
+          {!isLoading && vendors?.length > 0 ? vendors?.length : 0}{" "}
+          </span>
         </div>
       </div>
 

@@ -2,26 +2,26 @@ import { useState } from "react";
 import { Dropdown, FormControl, Button } from "react-bootstrap";
 import PropTypes from "prop-types";
 
-const SearchableDropdown = ({ options, onChange }) => {
+const SearchableDropdown = ({ options, onChange, setValues }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
 
   const filteredOptions = options?.filter(
     (option) =>
-      option.value.toLowerCase().includes(searchTerm?.toLowerCase()) &&
+      option.key.toLowerCase().includes(searchTerm?.toLowerCase()) &&
       !selectedItems.includes(option)
   );
 
   const handleSelect = (option) => {
     setSelectedItems((prevItems) => [...prevItems, option]);
+    setValues((prevItems) => [...prevItems, {
+      ...option,
+      productId: option.value,
+      isDelivered: false,
+      quantity: 0
+    }])
     onChange("product", selectedItems.map((item) => item.key));
     setSearchTerm("");
-  };
-
-  const handleRemoveChip = (option) => {
-    setSelectedItems((prevItems) =>
-      prevItems.filter((item) => item.key !== option.key)
-    );
   };
 
   return (
@@ -44,10 +44,10 @@ const SearchableDropdown = ({ options, onChange }) => {
           {filteredOptions?.length > 0 ? (
             filteredOptions.map((option) => (
               <Dropdown.Item
-                key={option.key}
+                key={option.value}
                 onClick={() => handleSelect(option)}
               >
-                {option.value}
+                {option.key}
               </Dropdown.Item>
             ))
           ) : (
@@ -55,25 +55,6 @@ const SearchableDropdown = ({ options, onChange }) => {
           )}
         </Dropdown.Menu>
       </Dropdown>
-
-      <div className="d-flex flex-wrap">
-        {selectedItems?.map((item) => (
-          <div
-            key={item.key}
-            className="badge bg-primary m-1"
-            style={{ display: "inline-flex", alignItems: "center" }}
-          >
-            {item?.value}
-            <button
-              type="button"
-              className="btn-close ms-2"
-              aria-label="Remove"
-              onClick={() => handleRemoveChip(item)}
-              style={{ fontSize: "0.7rem" }}
-            ></button>
-          </div>
-        ))}
-      </div>
     </div>
   );
 };

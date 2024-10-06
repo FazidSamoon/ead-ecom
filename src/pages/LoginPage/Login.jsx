@@ -16,15 +16,17 @@ const Login = () => {
   const navigation = useNavigate();
   const loginUser = async (data) => {
     const response = await axios.post(
-      "https://ecommerceapp2-young-silence-7292.fly.dev/api/User/login",
+      "https://ecommerceapp2-patient-thunder-9872.fly.dev/api/User/login",
       data
-    ); // Replace with your login endpoint
+    );
     return response.data;
   };
-  const { mutate } = useMutation(loginUser, {
+  const { mutate } = useMutation({
+    mutationFn: loginUser,
     onSuccess: (data) => {
       console.log("Login successful", data);
       localStorage.setItem("user", data);
+      localStorage.setItem("role", data.role === 0 ? "admin" : data.role === 1 ? "vendor" : data.role === 2 ? "csr" : "customer" )
       navigation("/");
     },
     onError: (error) => {

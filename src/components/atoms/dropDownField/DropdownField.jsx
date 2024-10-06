@@ -9,7 +9,7 @@ const DropdownField = ({ name, label, options }) => (
       <option value="">Select {label}</option>
       {options.map((option) => (
         <option key={option.key} value={option.value}>
-          {option.value}
+          {option.key}
         </option>
       ))}
     </Field>

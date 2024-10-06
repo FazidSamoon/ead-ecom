@@ -1,15 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../atoms/button/Button";
 import Icon from "../../atoms/icon/Icon";
 import Chip from "../../atoms/chip/Chip";
 import CommonTable from "../commonTable/CommonTable";
 import PeopleSort from "../peopleFilters/PeopleSort";
 import VendorModalController from "../vendorModalController/VendorModalController";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 const VendorTable = () => {
   const [openModal, setOpenModal] = useState(false);
   const [modalContext, setModalContext] = useState(null);
   const [selectedResource, setSelectedResource] = useState(null);
+
+  const [tableRows, setTableRows] = useState([]);
 
   const headers = [
     { label: "VendorName", key: "name" },
@@ -20,6 +24,18 @@ const VendorTable = () => {
     { label: "Status", key: "status" },
     { label: "Actions", key: "actions" },
   ];
+
+  const fetchVendors = async () => {
+    const { data } = await axios.get(
+      "https://ecommerceapp2-still-field-5715.fly.dev/api/User/all"
+    );
+    return data;
+  };
+
+  const { data: vendors, isLoading } = useQuery({
+    queryKey: ["vendors"],
+    queryFn: fetchVendors,
+  });
 
   const renderActionButtons = (row) => {
     return (
@@ -70,48 +86,32 @@ const VendorTable = () => {
     return <Chip label={status} color={color} />;
   };
 
-  const rows = [
-    {
-      id: 1,
-      name: "Vendor A",
-      address: "CMB",
-      email: "vendora@gmail.com",
-      averageRating: 4,
-      totalRating: 124,
-      status: "ACTIVE",
-    },
-    {
-      id: 1,
-      name: "Vendor A",
-      address: "CMB",
-      email: "vendora@gmail.com",
-      averageRating: 4,
-      totalRating: 124,
-      status: "ACTIVE",
-    },
-    {
-      id: 1,
-      name: "Vendor A",
-      address: "CMB",
-      email: "vendora@gmail.com",
-      averageRating: 4,
-      totalRating: 124,
-      status: "ACTIVE",
-    },
-  ];
-
-  const tableRows = rows.map((row) => ({
-    ...row,
-    status: renderStatusChip(row.status),
-    actions: renderActionButtons(row),
-  }));
-
   const handleRowClick = (row) => {
     console.log(row);
     alert(`Row clicked: ${row[0]}`);
   };
-  return <div>
-    <div className=" d-flex justify-content-between align-items-center mb-2">
+
+  useEffect(() => {
+    if (vendors && !isLoading) {
+      console.log(vendors?.filter((user) => user.role == 1));
+      setTableRows(
+        vendors
+          ?.filter((user) => user.role == 1)
+          ?.map((vendor) => ({
+            id: vendor?.id,
+            name: vendor?.username,
+            address: vendor?.address,
+            email: vendor?.email,
+            status: renderStatusChip("ACTIVE"),
+            actions: renderActionButtons(vendor),
+          }))
+      );
+    }
+  }, [isLoading, vendors]);
+
+  return (
+    <div>
+      <div className=" d-flex justify-content-between align-items-center mb-2">
         <span className=" h5 mb-2">All Vendor Data</span>
         <Button
           title="Add New Vendor"
@@ -135,7 +135,8 @@ const VendorTable = () => {
         resourceData={selectedResource}
         setOpenModal={setOpenModal}
       />
-  </div>;
+    </div>
+  );
 };
 
 export default VendorTable;

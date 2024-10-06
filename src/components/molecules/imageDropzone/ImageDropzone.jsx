@@ -2,7 +2,8 @@ import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import PropTypes from "prop-types";
 
-const ImageDropzone = ({ images, setImages }) => {
+const ImageDropzone = ({ images, setImages, defValues }) => {
+  console.log(images);
   const onDrop = useCallback(
     (acceptedFiles) => {
       const newImages = acceptedFiles.map((file) =>
@@ -78,6 +79,46 @@ const ImageDropzone = ({ images, setImages }) => {
           </div>
         ))}
       </div>
+
+      {defValues?.length > 0 && (
+        <div
+          className="image-preview-grid"
+          style={{ display: "flex", flexWrap: "wrap", marginTop: "10px" }}
+        >
+          {defValues.map((image) => (
+            <div
+              key={image.name}
+              style={{ position: "relative", margin: "5px" }}
+            >
+              <img
+                src={image}
+                alt={image.name}
+                style={{
+                  width: "100px",
+                  height: "100px",
+                  objectFit: "cover",
+                  borderRadius: "4px",
+                }}
+              />
+              <button
+                onClick={() => removeImage(image)}
+                style={{
+                  position: "absolute",
+                  top: "5px",
+                  right: "5px",
+                  background: "red",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "50%",
+                  cursor: "pointer",
+                }}
+              >
+                &times;
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

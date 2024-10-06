@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Button as BootstrapButton } from "react-bootstrap"; // Import Bootstrap's Button component
+import { Button as BootstrapButton, Spinner } from "react-bootstrap"; // Import Bootstrap's Button component
 
 const Button = ({
   title,
@@ -9,6 +9,7 @@ const Button = ({
   buttonType = "primary",
   buttonStyles,
   type,
+  isLoading
 }) => {
   return (
     <BootstrapButton
@@ -16,9 +17,11 @@ const Button = ({
       onClick={onClick}
       style={{ ...buttonStyles }}
       type={type}
+      disabled={isLoading}
     >
       {startIcon && <span className="me-2">{startIcon}</span>} {title}
       {endIcon && <span className="ms-2">{endIcon}</span>}
+      {isLoading && <Spinner animation="border" variant="primary" />}
     </BootstrapButton>
   );
 };

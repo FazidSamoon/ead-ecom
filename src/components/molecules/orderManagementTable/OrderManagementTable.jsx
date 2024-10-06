@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../atoms/button/Button";
 import Icon from "../../atoms/icon/Icon";
 import Chip from "../../atoms/chip/Chip";
@@ -6,16 +6,60 @@ import CommonTable from "../commonTable/CommonTable";
 import PeopleSort from "../peopleFilters/PeopleSort";
 import OrderModalController from "../orderModalController/OrderModalController";
 import CommonFIlter from "../commonFIlter/CommonFIlter";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 const OrderManagementTable = () => {
   const [openModal, setOpenModal] = useState(false);
   const [modalContext, setModalContext] = useState(null);
   const [selectedResource, setSelectedResource] = useState(null);
+  const [tableRows, setTableRows] = useState([]);
+
+  const fetchOrders = async () => {
+    const { data } = await axios.get(
+      "https://ecommerceapp2-still-field-5715.fly.dev/api/Order/GetAll-detailed"
+    );
+    return data;
+  };
+
+  const {
+    data: orders,
+    isLoading,
+    isError,
+  } = useQuery({ queryKey: ["orders"], queryFn: fetchOrders });
+
+  useEffect(() => {
+    if (orders && !isLoading) {
+      setTableRows(
+        orders?.map((order) => ({
+          orderId: order.id,
+          name: "John Doe",
+          phone: "123-456-7890",
+          address: "123 Mock St, City, Country",
+          productName: order?.items.map((item) => item.product.name).join(", "),
+          quantity: order.items.reduce((acc, item) => acc + item.quantity, 0),
+          status:
+            order.status === 0
+              ? "PROCESSING"
+              : order.status === 1
+              ? "READY FOR DELIVERY"
+              : order.status === 2
+              ? "SHIPPED"
+              : order.status === 3
+              ? "DELIVERED"
+              : "CANCELLED",
+          productRemain: order.items[0]?.product.stock,
+          items: order?.items,
+          actions: renderActionButtons(order),
+        }))
+      );
+    }
+  }, [orders, isLoading]);
 
   const headers = [
     { label: "Order Id", key: "orderId" },
-    { label: "Customer name", key: "customerName" },
-    { label: "Customer Phone", key: "customerPhone" },
+    { label: "Customer name", key: "name" },
+    { label: "Customer Phone", key: "phone" },
     { label: "Address", key: "address" },
     { label: "Product Name", key: "productName" },
     { label: "Quantity", key: "quantity" },
@@ -82,44 +126,13 @@ const OrderManagementTable = () => {
     return <Chip label={status} color={color} />;
   };
 
-  const rows = [
-    {
-      orderId: 1,
-      customerName: "Customer A",
-      customerPhone: "884473822",
-      address: "SL CMB",
-      productName: "Product A",
-      quantity: 10,
-      status: "DELIVERED",
-      productRemain: 100,
-    },
-    {
-      orderId: 1,
-      customerName: "Customer A",
-      customerPhone: "884473822",
-      address: "SL CMB",
-      productName: "Product A",
-      quantity: 10,
-      status: "PENDING",
-      productRemain: 100,
-    },
-    {
-      orderId: 1,
-      customerName: "Customer A",
-      customerPhone: "884473822",
-      address: "SL CMB",
-      productName: "Product A",
-      quantity: 10,
-      status: "REJECTED",
-      productRemain: 100,
-    },
-  ];
+  // if (isLoading) {
+  //   return <div>Loading orders...</div>;
+  // }
 
-  const tableRows = rows.map((row) => ({
-    ...row,
-    status: renderStatusChip(row.status),
-    actions: renderActionButtons(row),
-  }));
+  // if (isError) {
+  //   return <div>Error fetching orders</div>;
+  // }
 
   const handleRowClick = (row) => {
     console.log(row);

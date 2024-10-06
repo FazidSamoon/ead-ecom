@@ -1,15 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../atoms/button/Button";
 import Icon from "../../atoms/icon/Icon";
 import CommonTable from "../commonTable/CommonTable";
 import PeopleSort from "../peopleFilters/PeopleSort";
 import Chip from "../../atoms/chip/Chip";
 import ProductModalController from "../productModalController/ProductModalController";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 const ProductManagementTable = () => {
   const [openModal, setOpenModal] = useState(false);
   const [modalContext, setModalContext] = useState(null);
   const [selectedResource, setSelectedResource] = useState(null);
+
+  const [tableRows, setTableRows] = useState([]);
+
+  const fetchProducts = async () => {
+    const { data } = await axios.get(
+      "https://ecommerceapp2-patient-thunder-9872.fly.dev/api/Product/all"
+    );
+    return data;
+  };
+
+  const {
+    data: products,
+    isLoading,
+  } = useQuery({ queryKey: ["products"], queryFn: fetchProducts });
 
   const headers = [
     { label: "Product Name", key: "productName" },
@@ -49,7 +65,7 @@ const ProductManagementTable = () => {
       setSelectedResource(row);
       setOpenModal(true);
     } else if (action === "delete") {
-      setModalContext("DELETE_RESOURCE");
+      setModalContext("DELETE_PRODUCT");
       setSelectedResource(row);
       setOpenModal(true);
     }
@@ -76,46 +92,34 @@ const ProductManagementTable = () => {
     return <Chip label={status} color={color} />;
   };
 
-  const rows = [
-    {
-      id: 1,
-      productName: "Product A",
-      price: 30,
-      instock: "New York",
-      vendor: "Vendor A",
-      category: "Kitchen",
-      status: "IN STOCK",
-    },
-    {
-      id: 2,
-      productName: "Product B",
-      price: 45,
-      instock: "London",
-      vendor: "Vendor B",
-      category: "Living Room",
-      status: "OUT OF STOCK",
-    },
-    {
-      id: 3,
-      productName: "Product C",
-      price: 60,
-      instock: "San Francisco",
-      vendor: "Vendor C",
-      category: "Office",
-      status: "RESTOCK STATE",
-    },
-  ];
-
-  const tableRows = rows.map((row) => ({
-    ...row,
-    status: renderStatusChip(row.status),
-    actions: renderActionButtons(row),
-  }));
-
   const handleRowClick = (row) => {
-    console.log(row);
-    alert(`Row clicked: ${row[0]}`);
+    setModalContext("VIEW_PRODUCT")
+    setSelectedResource(row);
+    setOpenModal(true);
   };
+
+  useEffect(() => {
+    if (products && !isLoading) {
+      setTableRows(
+        products?.map((product) => ({
+          productName: product?.name,
+          price: product?.price,
+          instock: product.stock,
+          vendor: product?.vendorId,
+          category: product?.category,
+          imageUrls: product?.imageUrls,
+          status: renderStatusChip(
+            product?.stock > 20
+              ? "IN STOCK"
+              : product?.stock > 0 && product?.stock <= 20
+              ? "RESTOCK STATE"
+              : "OUT OF STOCK"
+          ),
+          actions: renderActionButtons(product),
+        }))
+      );
+    }
+  }, [products, isLoading]);
   return (
     <div className=" mt-5">
       <div className=" d-flex justify-content-between align-items-center mb-2">

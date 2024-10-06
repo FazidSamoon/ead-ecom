@@ -2,7 +2,9 @@ import PropTypes from "prop-types";
 
 const CommonTable = ({ tableHeaders, tableRows, onRowClick, sort, filter }) => {
   return (
-    <div className="table-responsive">
+    <div className="table-responsive" style={{
+      maxHeight: "600px"
+    }}>
       <div className=" d-flex justify-content-between">
         <div className="">{sort}</div>
         <div className="">{filter}</div>

@@ -4,6 +4,10 @@ import { X } from "react-bootstrap-icons";
 
 import Button from "../../atoms/button/Button";
 import ProductForms from "../addEditProductModal/ProductForms";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import { toast } from "react-toastify";
+import ProductDetails from "../productDetails/ProductDetails";
 
 const ProductModalController = ({
   isOpen,
@@ -14,6 +18,7 @@ const ProductModalController = ({
   setOpenModal,
   setModalContext,
 }) => {
+  console.log(modalContext)
   const getTitle = () => {
     switch (modalContext) {
       case "ADD_NEW_PRODUCT":
@@ -26,6 +31,34 @@ const ProductModalController = ({
         return resourceData?.productName ?? "";
       default:
         return "";
+    }
+  };
+
+  const queryClient = useQueryClient();
+
+  const deleteProduct = async (productId) => {
+    const response = await axios.delete(
+      `https://ecommerceapp2-patient-thunder-9872.fly.dev/api/Product/${productId}`
+    );
+    return response.data;
+  };
+
+  const { mutate: deleteMutate } = useMutation({
+    mutationFn: deleteProduct,
+    onSuccess: async () => {
+      toast.success("Product successfully deleted");
+      await queryClient.invalidateQueries(["products"]);
+      setOpenModal(false);
+      setModalContext(null);
+    },
+    onError: (error) => {
+      toast.error(`Failed to delete product: ${error.message}`);
+    },
+  });
+
+  const handleProductDelete = () => {
+    if (resourceData?.productId) {
+      deleteMutate(resourceData.productId);
     }
   };
 
@@ -59,11 +92,17 @@ const ProductModalController = ({
         </ModalHeader>
       </div>
       <ModalBody>
+
+      {modalContext === "VIEW_PRODUCT" && (
+          <ProductDetails product={resourceData} />
+        )}
         {["ADD_NEW_PRODUCT", "EDIT_PRODUCT"].includes(modalContext) && (
           <ProductForms
             modalContext={modalContext}
             onCancel={onCancel}
             resourceData={resourceData}
+            setOpenModal={setOpenModal}
+            setModalContext={setModalContext}
           />
         )}
 
@@ -76,7 +115,7 @@ const ProductModalController = ({
 
       {modalContext === "DELETE_PRODUCT" && (
         <ModalFooter>
-          <Button buttonType="danger" onClick={onDelete} title="Delete" />
+          <Button buttonType="danger" onClick={handleProductDelete} title="Delete" />
           <Button buttonType="secondary" onClick={onCancel} title="Cancel" />
         </ModalFooter>
       )}

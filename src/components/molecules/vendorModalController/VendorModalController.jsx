@@ -61,6 +61,8 @@ const VendorModalController = ({
       <VendorForm
         modalContext={modalContext}
         onCancel={onCancel}
+        setModalContext={setModalContext}
+        setOpenModal={setOpenModal}
         resourceData={resourceData}
       />
     )}

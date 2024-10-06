@@ -14,16 +14,16 @@ const UserManagementTable = () => {
 
   const fetchUsers = async () => {
     const { data } = await axios.get(
-      "https://ecommerceapp2-young-silence-7292.fly.dev/api/User/all"
+      "https://ecommerceapp2-still-field-5715.fly.dev/api/User/all"
     );
     return data;
   };
 
-  // const {
-  //   data: users,
-  //   isLoading,
-  //   error,
-  // } = useQuery({ queryKey: ["users"], queryFn: fetchUsers });
+  const {
+    data: users,
+    isLoading,
+    error,
+  } = useQuery({ queryKey: ["users"], queryFn: fetchUsers });
   const headers = [
     { label: "Username", key: "username" },
     { label: "Email", key: "email" },
@@ -66,14 +66,14 @@ const UserManagementTable = () => {
     }
   };
 
-  const tableRows = []
-    // users?.map((user) => ({
-    //   username: user?.username,
-    //   email: user?.email,
-    //   role: user?.role === 0 ? "User" : "Admin",
-    //   createdAt: new Date(user.createdAt)?.toLocaleDateString(),
-    //   actions: renderActionButtons(user),
-    // })) || [];
+  const tableRows =
+    users?.map((user) => ({
+      username: user?.username,
+      email: user?.email,
+      role: user?.role === 0 ? "User" : "Admin",
+      createdAt: new Date(user.createdAt)?.toLocaleDateString(),
+      actions: renderActionButtons(user),
+    })) || [];
 
   const handleRowClick = (row) => {
     console.log(row);

@@ -6,7 +6,7 @@ const ProductHome = () => {
   return (
     <div>
       <ProductManagementStats />
-      <ProductAlerts />
+      {/* <ProductAlerts /> */}
       <ProductManagementTable />
     </div>
   );

@@ -14,15 +14,17 @@ import VendorHome from "./VendorHome/VendorHome";
 const index = () => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const navigate = useNavigate();
-  const isAdmin = true;
-  const user = true;
+  const isAdmin = localStorage.getItem("role") == "admin";
+  const user = localStorage.getItem("user");
+
+  console.log(isAdmin)
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  // useEffect(() => {
-  //   if (!user) {
-  //     navigate("/auth/login");
-  //   }
-  // }, [navigate, user]);
+  useEffect(() => {
+    if (!user) {
+      navigate("/auth/login");
+    }
+  }, [navigate, user]);
   return (
     <div>
       <Routes>
@@ -57,8 +59,8 @@ const index = () => {
           ) : (
             <>
               <Route path="auth">
-                <Route path="login" element={<Login />} />,
-                <Route path="register" element={<Signup />} />
+                <Route path="login"register element={<Login />} />,
+                <Route path="" element={<Signup />} />
               </Route>
             </>
           )}
