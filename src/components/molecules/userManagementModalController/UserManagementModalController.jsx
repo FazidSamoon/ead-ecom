@@ -62,7 +62,7 @@ const UserManagementModalController = ({
 
   const updateUser = async (payload) => {
     const response = await axios.put(
-      "https://ecommerceapp2-bold-dew-1540.fly.dev/api/User/" +
+      "https://ecommerceapp2-floral-water-1036.fly.dev/api/User/" +
         resourceData?.id,
       payload
     );
