@@ -44,11 +44,12 @@ const OrderForms = ({
         );
         const data = await response.json();
 
-        console.log;
+        console.log("data ", data)
         const transformedProducts = data.map((product) => ({
           key: product.name,
           value: product.productId,
           vendorId: product.vendorId,
+          unitPrice: product.price
         }));
         setOptions(transformedProducts);
       } catch (error) {
@@ -119,9 +120,11 @@ const OrderForms = ({
           : 3;
       editMutate({
         ...values,
-        status: values.status === 0 ? status : values.status,
+        status: values.status === 0 ? Number(status) : Number(values.status),
         items: products,
         customerId: values.customerEmail,
+        id: resourceData.id,
+        cancellationReason: values?.remark
       });
     }
   };
@@ -152,6 +155,7 @@ const OrderForms = ({
           value: item?.product?.productId,
           vendorId: item?.vendor?.vendorId,
           productId: item?.product?.productId,
+          unitPrice: item?.product?.price,
           isDelivered: item?.isDelivered,
           quantity: item?.quantity,
         }))

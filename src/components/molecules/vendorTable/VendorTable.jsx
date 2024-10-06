@@ -33,7 +33,7 @@ const VendorTable = () => {
   };
 
   const { data: vendors, isLoading } = useQuery({
-    queryKey: ["vendors"],
+    queryKey: ["users"],
     queryFn: fetchVendors,
   });
 
@@ -93,7 +93,6 @@ const VendorTable = () => {
 
   useEffect(() => {
     if (vendors && !isLoading) {
-      console.log(vendors?.filter((user) => user.role == 1));
       setTableRows(
         vendors
           ?.filter((user) => user.role == 1)
@@ -102,7 +101,7 @@ const VendorTable = () => {
             name: vendor?.username,
             address: vendor?.address,
             email: vendor?.email,
-            status: renderStatusChip("ACTIVE"),
+            status: renderStatusChip(vendor.isActive ? "ACTIVE" : "DEACTIVATED"),
             actions: renderActionButtons(vendor),
           }))
       );

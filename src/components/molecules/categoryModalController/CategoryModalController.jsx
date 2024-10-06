@@ -1,10 +1,11 @@
-import PropTypes from "prop-types";
+import React from "react";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "react-bootstrap";
 import { X } from "react-bootstrap-icons";
-
 import Button from "../../atoms/button/Button";
-import OrderForms from "../OrderForms/OrderForms";
-const OrderModalController = ({
+import CategoryForms from "../categoryForms/CategoryForms";
+import CategoryDetails from "../categoryDetails/CategoryDetails";
+
+const CategoryModalController = ({
   isOpen,
   modalContext,
   resourceData = {},
@@ -15,18 +16,20 @@ const OrderModalController = ({
 }) => {
   const getTitle = () => {
     switch (modalContext) {
-      case "ADD_NEW_ORDER":
-        return "Add New Order";
-      case "EDIT_ORDER":
-        return "Edit Order";
-      case "DELETE_ORDER":
-        return "Are You Sure You Want to Delete Order?";
-      case "VIEW_ORDER":
-        return resourceData?.orderId ?? "";
+      case "ADD_CATEGORIES":
+        return "Add New Category";
+      case "MANAGE_CATEGORIES":
+        return "Edit Category";
+      case "DELETE_CATEGORIES":
+        return "Are You Sure You Want to Delete Category?";
+      case "VIEW_CATEGORY":
+        return resourceData?.name ?? "";
       default:
         return "";
     }
   };
+
+  const handleCategoryDelete = () => {};
   return (
     <Modal
       show={isOpen}
@@ -56,27 +59,41 @@ const OrderModalController = ({
           </div>
         </ModalHeader>
       </div>
+
       <ModalBody>
-        {["ADD_NEW_ORDER", "EDIT_ORDER"].includes(modalContext) && (
-          <OrderForms
-            modalContext={modalContext}
-            onCancel={onCancel}
+        {modalContext === "VIEW_CATEGORY" && (
+          <CategoryDetails category={resourceData} />
+        )}
+        {["ADD_CATEGORIES", "MANAGE_CATEGORIES"].includes(modalContext) && (
+          <CategoryForms
             resourceData={resourceData}
+            modalContext={modalContext}
             setModalContext={setModalContext}
             setOpenModal={setOpenModal}
           />
+          //   <ProductForms
+          //     modalContext={modalContext}
+          //     onCancel={onCancel}
+          //     resourceData={resourceData}
+          //     setOpenModal={setOpenModal}
+          //     setModalContext={setModalContext}
+          //   />
         )}
 
-        {modalContext === "DELETE_ORDER" && (
+        {modalContext === "DELETE_CATEGORIES" && (
           <div className="text-center">
-            <span>Are you sure you want to delete this order?</span>
+            <span>Are you sure you want to delete this product?</span>
           </div>
         )}
       </ModalBody>
 
-      {modalContext === "DELETE_ORDER" && (
+      {modalContext === "DELETE_CATEGORIEST" && (
         <ModalFooter>
-          <Button buttonType="danger" onClick={onDelete} title="Delete" />
+          <Button
+            buttonType="danger"
+            onClick={handleCategoryDelete}
+            title="Delete"
+          />
           <Button buttonType="secondary" onClick={onCancel} title="Cancel" />
         </ModalFooter>
       )}
@@ -84,18 +101,4 @@ const OrderModalController = ({
   );
 };
 
-OrderModalController.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  modalContext: PropTypes.oneOf([
-    "ADD_NEW_PRODUCT",
-    "EDIT_PRODUCT",
-    "DELETE_RESOURCE",
-    "VIEW_PRODUCT",
-  ]).isRequired,
-  resourceData: PropTypes.object,
-  onDelete: PropTypes.func,
-  onCancel: PropTypes.func.isRequired,
-  setOpenModal: PropTypes.func.isRequired,
-  setModalContext: PropTypes.func.isRequired,
-};
-export default OrderModalController;
+export default CategoryModalController;

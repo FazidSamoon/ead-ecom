@@ -18,7 +18,6 @@ const ProductModalController = ({
   setOpenModal,
   setModalContext,
 }) => {
-  console.log(modalContext)
   const getTitle = () => {
     switch (modalContext) {
       case "ADD_NEW_PRODUCT":
