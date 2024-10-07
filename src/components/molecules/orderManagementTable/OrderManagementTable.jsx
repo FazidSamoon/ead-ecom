@@ -14,6 +14,8 @@ const OrderManagementTable = () => {
   const [modalContext, setModalContext] = useState(null);
   const [selectedResource, setSelectedResource] = useState(null);
   const [tableRows, setTableRows] = useState([]);
+  const role = localStorage.getItem("role");
+  const userId = localStorage.getItem("userId");
 
   const fetchOrders = async () => {
     const { data } = await axios.get(
@@ -30,8 +32,16 @@ const OrderManagementTable = () => {
 
   useEffect(() => {
     if (orders && !isLoading) {
+      let filteredOrders = orders;
+
+      if (role === "vendor") {
+        filteredOrders = orders.filter((order) =>
+          order.items.some((item) => item.vendor.vendorId === userId)
+        );
+      }
+
       setTableRows(
-        orders?.map((order) => ({
+        filteredOrders?.map((order) => ({
           orderId: order.id,
           name: "John Doe",
           phone: "123-456-7890",
@@ -54,7 +64,7 @@ const OrderManagementTable = () => {
         }))
       );
     }
-  }, [orders, isLoading]);
+  }, [orders, isLoading, role, userId]);
 
   const headers = [
     { label: "Order Id", key: "orderId" },

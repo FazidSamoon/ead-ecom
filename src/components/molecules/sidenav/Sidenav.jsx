@@ -14,6 +14,7 @@ const sideNavData = [
     title: "User Management",
     icon: <i className="bi bi-people-fill" />,
     url: "/users",
+    rolesAllowed: ["admin"],
   },
   {
     id: "1",
@@ -32,6 +33,7 @@ const sideNavData = [
     title: "Inventory Management",
     icon: <i className="bi bi-shop" />,
     url: "/inventory",
+    rolesAllowed: ["admin"],
   },
   {
     id: "1",
@@ -44,6 +46,7 @@ const sideNavData = [
 const Sidenav = () => {
   const navigate = useNavigate();
 
+  const userRole = localStorage.getItem("role");
   const [selectedPath, setSelectedPath] = useState("Overview");
   return (
     <div id="viewport">
@@ -51,32 +54,40 @@ const Sidenav = () => {
         <header>
           <a href="#">My App</a>
         </header>
-        <div style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          height: "100%",
-          paddingBottom: 60
-        }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            height: "100%",
+            paddingBottom: 60,
+          }}
+        >
           <ul className="nav">
-            {sideNavData.map((sidenav, index) => (
-              <li
-                key={index}
-                style={{
-                  backgroundColor:
-                    selectedPath === sidenav.title ? "#50585c" : "",
-                }}
-              >
-                <div
-                  onClick={() => {
-                    setSelectedPath(sidenav.title);
-                    navigate(`${sidenav.url}`);
+            {sideNavData
+              .filter(
+                (sidenav) =>
+                  !sidenav.rolesAllowed ||
+                  sidenav.rolesAllowed.includes(userRole)
+              )
+              .map((sidenav, index) => (
+                <li
+                  key={index}
+                  style={{
+                    backgroundColor:
+                      selectedPath === sidenav.title ? "#50585c" : "",
                   }}
                 >
-                  {sidenav.icon} {sidenav.title}
-                </div>
-              </li>
-            ))}
+                  <div
+                    onClick={() => {
+                      setSelectedPath(sidenav.title);
+                      navigate(`${sidenav.url}`);
+                    }}
+                  >
+                    {sidenav.icon} {sidenav.title}
+                  </div>
+                </li>
+              ))}
           </ul>
 
           <ul className="nav">
@@ -87,8 +98,8 @@ const Sidenav = () => {
             >
               <div
                 onClick={() => {
-                  localStorage.clear()
-                  navigate("/auth/login")
+                  localStorage.clear();
+                  navigate("/auth/login");
                 }}
               >
                 SignOut
