@@ -14,18 +14,27 @@ const ProductManagementTable = () => {
   const [selectedResource, setSelectedResource] = useState(null);
 
   const [tableRows, setTableRows] = useState([]);
+  const role = localStorage.getItem("role");
+  const vendorId = localStorage.getItem("userId"); // Assuming vendorId is stored in localStorage
 
   const fetchProducts = async () => {
     const { data } = await axios.get(
       "https://ecommerceapp2-patient-thunder-9872.fly.dev/api/Product/all"
     );
+
+    // If the user is a vendor, filter products by vendorId
+    // if (role === "vendor") {
+    //   console.log("data ", data.filter(product => product.vendorId === vendorId))
+    //   return data.filter(product => product.vendorId === vendorId);
+    // }
+
     return data;
   };
 
-  const {
-    data: products,
-    isLoading,
-  } = useQuery({ queryKey: ["products"], queryFn: fetchProducts });
+  const { data: products, isLoading } = useQuery({
+    queryKey: ["products"],
+    queryFn: fetchProducts,
+  });
 
   const headers = [
     { label: "Product Name", key: "productName" },
@@ -93,33 +102,57 @@ const ProductManagementTable = () => {
   };
 
   const handleRowClick = (row) => {
-    setModalContext("VIEW_PRODUCT")
+    setModalContext("VIEW_PRODUCT");
     setSelectedResource(row);
     setOpenModal(true);
   };
 
   useEffect(() => {
     if (products && !isLoading) {
-      setTableRows(
-        products?.map((product) => ({
-          productName: product?.name,
-          price: product?.price,
-          instock: product.stock,
-          vendor: product?.vendorId,
-          category: product?.category,
-          imageUrls: product?.imageUrls,
-          status: renderStatusChip(
-            product?.stock > 20
-              ? "IN STOCK"
-              : product?.stock > 0 && product?.stock <= 20
-              ? "RESTOCK STATE"
-              : "OUT OF STOCK"
-          ),
-          actions: renderActionButtons(product),
-        }))
-      );
+      if (role === "vendor") {
+        setTableRows(
+          products
+            ?.filter((p) => p.vendorId === vendorId)
+            ?.map((product) => ({
+              productName: product?.name,
+              price: product?.price,
+              instock: product.stock,
+              vendor: product?.vendorId,
+              category: product?.category,
+              imageUrls: product?.imageUrls,
+              status: renderStatusChip(
+                product?.stock > 20
+                  ? "IN STOCK"
+                  : product?.stock > 0 && product?.stock <= 20
+                  ? "RESTOCK STATE"
+                  : "OUT OF STOCK"
+              ),
+              actions: renderActionButtons(product),
+            }))
+        );
+      } else {
+        setTableRows(
+          products?.map((product) => ({
+            productName: product?.name,
+            price: product?.price,
+            instock: product.stock,
+            vendor: product?.vendorId,
+            category: product?.category,
+            imageUrls: product?.imageUrls,
+            status: renderStatusChip(
+              product?.stock > 20
+                ? "IN STOCK"
+                : product?.stock > 0 && product?.stock <= 20
+                ? "RESTOCK STATE"
+                : "OUT OF STOCK"
+            ),
+            actions: renderActionButtons(product),
+          }))
+        );
+      }
     }
-  }, [products, isLoading]);
+  }, [products, isLoading, role]);
+
   return (
     <div className=" mt-5">
       <div className=" d-flex justify-content-between align-items-center mb-2">

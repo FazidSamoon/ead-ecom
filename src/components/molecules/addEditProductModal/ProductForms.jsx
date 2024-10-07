@@ -106,7 +106,7 @@ const ProductForms = ({
         isActive: true,
         price: rest.price,
         description: rest.description || "",
-        stock: rest.inStock ? 1 : 0,
+        stock: rest.stock,
         imageUrls,
       };
 
@@ -132,7 +132,7 @@ const ProductForms = ({
         isActive: true,
         price: rest.price,
         description: rest.description || "",
-        stock: rest.inStock ? 1 : 0,
+        stock: rest.stock,
         imageUrls,
       };
 
@@ -201,10 +201,11 @@ const ProductForms = ({
       initialValues={{
         productName: resourceData?.name || "",
         price: resourceData?.price || "",
-        inStock: resourceData?.inStock || true,
+        inStock: resourceData?.inStock || 0,
         category: resourceData?.category || "",
         vendor: resourceData?.vendorId || "",
         images: resourceData?.imageUrls || [],
+        stock: resourceData?.stock || 0
       }}
       // validationSchema={productValidationSchema}
       onSubmit={onSubmit}
@@ -231,10 +232,11 @@ const ProductForms = ({
               />
             </Col>
             <Col md={4}>
-              <DropdownField
-                name="inStock"
-                label="In Stock"
-                options={inStockOptions}
+            <InputField
+                name="stock"
+                label="No Of Products"
+                type="number"
+                placeholder="No Of Products"
               />
             </Col>
 

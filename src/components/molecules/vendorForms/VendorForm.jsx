@@ -56,7 +56,7 @@ const VendorForm = ({
     mutationFn: async (vendorData) => {
       return createVendor({
         ...vendorData,
-        role: 2,
+        role: 1,
       });
     },
     onSuccess: async () => {
@@ -71,7 +71,7 @@ const VendorForm = ({
     mutationFn: async (vendorData) => {
       return editVendor({
         ...vendorData,
-        role: 2,
+        role: 1,
       });
     },
     onSuccess: async () => {

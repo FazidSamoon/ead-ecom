@@ -16,7 +16,7 @@ const Login = () => {
   const navigation = useNavigate();
   const loginUser = async (data) => {
     const response = await axios.post(
-      "https://ecommerceapp2-patient-thunder-9872.fly.dev/api/User/login",
+      "https://ecommerceapp2-floral-water-1036.fly.dev/api/User/login",
       data
     );
     return response.data;

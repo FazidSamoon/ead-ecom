@@ -28,11 +28,12 @@ const signupValidationSchema = Yup.object().shape({
 const Signup = () => {
   const navigate = useNavigate();
   const signupUser = async (data) => {
-    const response = await axios.post("/api/signup", data); // Replace with your signup API endpoint
+    const response = await axios.post("https://ecommerceapp2-bold-dew-1540.fly.dev/api/User/register", data); // Replace with your signup API endpoint
     return response.data;
   };
 
-  const mutation = useMutation(signupUser, {
+  const mutation = useMutation({
+    mutationFn: signupUser,
     onSuccess: () => {
       toast.success("Signup successful");
       navigate("/");
