@@ -51,7 +51,7 @@ const Sidenav = () => {
       <div id="sidebar">
         <header>
 
-  <img src={logo} alt="Liceria Furniture Logo" style={{ width: '220px', height: 'auto' }} />
+  <img src={logo} alt="Liceria Furniture Logo" style={{ width: '120px', height: 'auto' }} />
 
 
         </header>
