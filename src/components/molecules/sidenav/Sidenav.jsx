@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import "./sidenav.scss";
 import { useState } from "react";
+import logo from "../../../assets/logo.png"; // adjust the path accordingly
 
 const sideNavData = [
   {
@@ -14,7 +15,6 @@ const sideNavData = [
     title: "User Management",
     icon: <i className="bi bi-people-fill" />,
     url: "/users",
-    rolesAllowed: ["admin"],
   },
   {
     id: "1",
@@ -33,7 +33,6 @@ const sideNavData = [
     title: "Inventory Management",
     icon: <i className="bi bi-shop" />,
     url: "/inventory",
-    rolesAllowed: ["admin"],
   },
   {
     id: "1",
@@ -46,60 +45,54 @@ const sideNavData = [
 const Sidenav = () => {
   const navigate = useNavigate();
 
-  const userRole = localStorage.getItem("role");
   const [selectedPath, setSelectedPath] = useState("Overview");
   return (
     <div id="viewport">
       <div id="sidebar">
         <header>
-          <a href="#">My App</a>
+
+  <img src={logo} alt="Liceria Furniture Logo" style={{ width: '220px', height: 'auto' }} />
+
+
         </header>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            height: "100%",
-            paddingBottom: 60,
-          }}
-        >
+        <div style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          height: "100%",
+          paddingBottom: 60
+        }}>
           <ul className="nav">
-            {sideNavData
-              .filter(
-                (sidenav) =>
-                  !sidenav.rolesAllowed ||
-                  sidenav.rolesAllowed.includes(userRole)
-              )
-              .map((sidenav, index) => (
-                <li
-                  key={index}
-                  style={{
-                    backgroundColor:
-                      selectedPath === sidenav.title ? "#50585c" : "",
+            {sideNavData.map((sidenav, index) => (
+              <li
+                key={index}
+                style={{
+                  backgroundColor:
+                    selectedPath === sidenav.title ? "#838383" : "",
+                }}
+              >
+                <div
+                  onClick={() => {
+                    setSelectedPath(sidenav.title);
+                    navigate(`${sidenav.url}`);
                   }}
                 >
-                  <div
-                    onClick={() => {
-                      setSelectedPath(sidenav.title);
-                      navigate(`${sidenav.url}`);
-                    }}
-                  >
-                    {sidenav.icon} {sidenav.title}
-                  </div>
-                </li>
-              ))}
+                  {sidenav.icon} {sidenav.title}
+                </div>
+              </li>
+            ))}
           </ul>
 
           <ul className="nav">
             <li
               style={{
-                backgroundColor: "#50585c",
+                backgroundColor: "#838383",
               }}
             >
               <div
                 onClick={() => {
-                  localStorage.clear();
-                  navigate("/auth/login");
+                  localStorage.clear()
+                  navigate("/auth/login")
                 }}
               >
                 SignOut
