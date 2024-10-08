@@ -36,7 +36,7 @@ const sideNavData = [
   },
   {
     id: "1",
-    title: "Vender Management",
+    title: "Vendor Management",
     icon: <i className="bi bi-person-raised-hand" />,
     url: "/vendor",
   },
