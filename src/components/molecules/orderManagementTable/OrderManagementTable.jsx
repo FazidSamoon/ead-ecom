@@ -17,6 +17,7 @@ const OrderManagementTable = () => {
   const role = localStorage.getItem("role");
   const userId = localStorage.getItem("userId");
 
+  // Fetch orders
   const fetchOrders = async () => {
     const { data } = await axios.get(
       "https://ecommerceapp-final-notification-config-autumn-night-6820.fly.dev/api/Order/GetAll-detailed"
@@ -24,28 +25,46 @@ const OrderManagementTable = () => {
     return data;
   };
 
+  // Fetch customers
+  const fetchCustomers = async () => {
+    const { data } = await axios.get(
+      "https://ecommerceapp-final-notification-config-autumn-night-6820.fly.dev/api/User/all"
+    );
+    return data;
+  };
+
   const {
     data: orders,
-    isLoading,
-    isError,
+    isLoading: ordersLoading,
+    isError: ordersError,
   } = useQuery({ queryKey: ["orders"], queryFn: fetchOrders });
 
+  const {
+    data: customers,
+    isLoading: customersLoading,
+    isError: customersError,
+  } = useQuery({ queryKey: ["customers"], queryFn: fetchCustomers });
+
   useEffect(() => {
-    if (orders && !isLoading) {
+    if (orders && customers && !ordersLoading && !customersLoading) {
       let filteredOrders = orders;
 
+      // Filter orders for vendors if applicable
       if (role === "vendor") {
         filteredOrders = orders.filter((order) =>
           order.items.some((item) => item.vendor.vendorId === userId)
         );
       }
 
-      setTableRows(
-        filteredOrders?.map((order) => ({
+      // Map customer info to orders
+      const updatedTableRows = filteredOrders.map((order) => {
+        const customer = customers.find((c) => c.id === order.customerId);
+
+        return {
           orderId: order.id,
-          name: "John Doe",
-          phone: "123-456-7890",
-          address: "123 Mock St, City, Country",
+          name: customer ? `${customer.firstName} ${customer.lastName}` : "N/A",
+          phone: customer ? customer.phoneNumber : "N/A",
+          address: customer ? customer.address : "N/A",
           productName: order?.items.map((item) => item.product.name).join(", "),
           quantity: order.items.reduce((acc, item) => acc + item.quantity, 0),
           status:
@@ -60,14 +79,15 @@ const OrderManagementTable = () => {
               : order.status === 4
               ? "CANCELLED"
               : "REQUESTED TO CANCEL",
-
           productRemain: order.items[0]?.product.stock,
           items: order?.items,
           actions: renderActionButtons(order),
-        }))
-      );
+        };
+      });
+
+      setTableRows(updatedTableRows);
     }
-  }, [orders, isLoading, role, userId]);
+  }, [orders, customers, ordersLoading, customersLoading, role, userId]);
 
   const headers = [
     { label: "Order Id", key: "orderId" },
@@ -139,18 +159,11 @@ const OrderManagementTable = () => {
     return <Chip label={status} color={color} />;
   };
 
-  // if (isLoading) {
-  //   return <div>Loading orders...</div>;
-  // }
-
-  // if (isError) {
-  //   return <div>Error fetching orders</div>;
-  // }
-
   const handleRowClick = (row) => {
     console.log(row);
     alert(`Row clicked: ${row[0]}`);
   };
+
   return (
     <div className=" mt-5">
       <div className=" d-flex justify-content-between align-items-center mb-2">
