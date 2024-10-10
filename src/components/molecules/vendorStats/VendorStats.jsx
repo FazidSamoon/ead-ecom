@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 const VendorStats = () => {
   const fetchVendors = async () => {
     const { data } = await axios.get(
-      "https://ecommerceapp2-floral-water-1036.fly.dev/api/Vendor"
+      "https://ecommerceapp-final-notification-config-autumn-night-6820.fly.dev/api/User/all"
     );
     return data;
   };
@@ -14,6 +14,8 @@ const VendorStats = () => {
     queryKey: ["vendors"],
     queryFn: fetchVendors,
   });
+
+  var vendorcount = vendors?.filter((user) => user.role == 1)
   return (
     <div className="d-flex flex-wrap gap-3">
       <div
@@ -24,7 +26,7 @@ const VendorStats = () => {
         <div className="d-flex flex-column align-items-center">
           <span className="h5 fw-normal">Total Vendors</span>
           <span className="h2 fw-bold">
-            {!isLoading && vendors?.length > 0 ? vendors?.length : 0}{" "}
+            {!isLoading && vendorcount?.length > 0 ? vendorcount?.length : 0}{" "}
           </span>
         </div>
       </div>
@@ -41,7 +43,7 @@ const VendorStats = () => {
         />
         <div className="d-flex flex-column align-items-center">
           <span className="h5 fw-normal">New Incomings This Week</span>
-          <span className="h2 fw-bold">90</span>
+          <span className="h2 fw-bold">10</span>
         </div>
       </div>
     </div>

@@ -14,7 +14,7 @@ const UserManagementTable = () => {
 
   const fetchUsers = async () => {
     const { data } = await axios.get(
-      "https://ecommerceapp2-still-field-5715.fly.dev/api/User/all"
+      "https://ecommerceapp-final-notification-config-autumn-night-6820.fly.dev/api/User/all"
     );
     return data;
   };
