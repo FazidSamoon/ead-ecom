@@ -16,7 +16,7 @@ const UserManagementTable = () => {
   // Fetch users data
   const fetchUsers = async () => {
     const { data } = await axios.get(
-      "https://ecommerceapp2-still-field-5715.fly.dev/api/User/all"
+      "https://ecommerceapp-final-notification-config-autumn-night-6820.fly.dev/api/User/all"
     );
     return data;
   };
@@ -84,8 +84,8 @@ const UserManagementTable = () => {
     }
     else if (action === "delete") {
       // setModalContext("DELETE_RESOURCE");
-      setSelectedResource(row); // Set the selected resource for deletion
-      setOpenModal(true);
+      // setSelectedResource(row); // Set the selected resource for deletion
+      // setOpenModal(true);
     }
 
 
@@ -104,8 +104,8 @@ const UserManagementTable = () => {
     })) || [];
 
   const handleRowClick = (row) => {
-    console.log(row);
-    alert(`Row clicked: ${row[0]}`);
+    // console.log(row);
+    // alert(`Row clicked: ${row[0]}`);
   };
 
   return (
