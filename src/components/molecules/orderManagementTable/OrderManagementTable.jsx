@@ -19,7 +19,7 @@ const OrderManagementTable = () => {
 
   const fetchOrders = async () => {
     const { data } = await axios.get(
-      "https://ecommerceapp2-still-field-5715.fly.dev/api/Order/GetAll-detailed"
+      "https://ecommerceapp-final-notification-config-autumn-night-6820.fly.dev/api/Order/GetAll-detailed"
     );
     return data;
   };
@@ -54,10 +54,13 @@ const OrderManagementTable = () => {
               : order.status === 1
               ? "READY FOR DELIVERY"
               : order.status === 2
-              ? "SHIPPED"
+              ? "PARTIALLY DELIVERED"
               : order.status === 3
               ? "DELIVERED"
-              : "CANCELLED",
+              : order.status === 4
+              ? "CANCELLED"
+              : "REQUESTED TO CANCEL",
+
           productRemain: order.items[0]?.product.stock,
           items: order?.items,
           actions: renderActionButtons(order),

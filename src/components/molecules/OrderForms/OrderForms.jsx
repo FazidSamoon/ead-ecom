@@ -17,6 +17,7 @@ const orderStatus = [
   { key: "PARTIALLY DELIVERED", value: 2 },
   { key: "DELIVERED", value: 3 },
   { key: "CANCELLED", value: 4 },
+  { key : "REQUESTED TO CANCEL", value: 5}
 ];
 
 const productValidationSchema = Yup.object().shape({
@@ -71,7 +72,7 @@ const OrderForms = ({
 
   const editOrder = async (payload) => {
     const response = await axios.put(
-      "https://ecommerceapp2-still-field-5715.fly.dev/api/Order/" +
+      "https://ecommerceapp-final-notification-config-autumn-night-6820.fly.dev/api/Order/" +
         resourceData.id,
       payload
     );
@@ -122,7 +123,7 @@ const OrderForms = ({
         ...values,
         status: values.status === 0 ? Number(status) : Number(values.status),
         items: products,
-        customerId: values.customerEmail,
+        customerId: values.customerId,
         id: resourceData.id,
         cancellationReason: values?.remark
       });
@@ -169,6 +170,7 @@ const OrderForms = ({
         customerEmail: resourceData?.customerEmail
           ? resourceData?.customerEmail
           : resourceData?.id,
+        customerID : resourceData?.customerId,
         note: resourceData?.note || "",
         customerPhone: resourceData?.customerPhone || "",
         status: resourceData?.status || "",
