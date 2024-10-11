@@ -44,24 +44,23 @@ const OrderManagementTable = () => {
     isLoading: customersLoading,
     isError: customersError,
   } = useQuery({ queryKey: ["customers"], queryFn: fetchCustomers });
-
   useEffect(() => {
     if (orders && customers && !ordersLoading && !customersLoading) {
       let filteredOrders = orders;
-
+  
       // Filter orders for vendors if applicable
       if (role === "vendor") {
         filteredOrders = orders.filter((order) =>
           order.items.some((item) => item.vendor.vendorId === userId)
         );
       }
-
+  
       // Map customer info to orders
       const updatedTableRows = filteredOrders.map((order) => {
         const customer = customers.find((c) => c.id === order.customerId);
-
+  
         return {
-          orderId: order.id,
+          orderId: order.id.slice(-6), // Show only the last 6 characters of the order ID
           name: customer ? `${customer.firstName} ${customer.lastName}` : "N/A",
           phone: customer ? customer.phoneNumber : "N/A",
           address: customer ? customer.address : "N/A",
@@ -84,10 +83,11 @@ const OrderManagementTable = () => {
           actions: renderActionButtons(order),
         };
       });
-
+  
       setTableRows(updatedTableRows);
     }
   }, [orders, customers, ordersLoading, customersLoading, role, userId]);
+  
 
   const headers = [
     { label: "Order Id", key: "orderId" },

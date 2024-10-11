@@ -12,28 +12,46 @@ const ProductManagementTable = () => {
   const [openModal, setOpenModal] = useState(false);
   const [modalContext, setModalContext] = useState(null);
   const [selectedResource, setSelectedResource] = useState(null);
-
   const [tableRows, setTableRows] = useState([]);
+  
   const role = localStorage.getItem("role");
-  const vendorId = localStorage.getItem("userId"); // Assuming vendorId is stored in localStorage
+  const vendorId = localStorage.getItem("userId");
 
+  // Fetch products
   const fetchProducts = async () => {
     const { data } = await axios.get(
       "https://ecommerceapp2-patient-thunder-9872.fly.dev/api/Product/all"
     );
-
-    // If the user is a vendor, filter products by vendorId
-    // if (role === "vendor") {
-    //   console.log("data ", data.filter(product => product.vendorId === vendorId))
-    //   return data.filter(product => product.vendorId === vendorId);
-    // }
-
     return data;
   };
 
-  const { data: products, isLoading } = useQuery({
+  // Fetch all users (to get vendor names)
+  const fetchUsers = async () => {
+    const { data } = await axios.get("https://liceria.fly.dev/api/User/all");
+    return data;
+  };
+
+  // Fetch all product categories
+  const fetchCategories = async () => {
+    const { data } = await axios.get(
+      "https://liceria.fly.dev/api/ProductCategory"
+    );
+    return data;
+  };
+
+  const { data: products, isLoading: isLoadingProducts } = useQuery({
     queryKey: ["products"],
     queryFn: fetchProducts,
+  });
+
+  const { data: users, isLoading: isLoadingUsers } = useQuery({
+    queryKey: ["users"],
+    queryFn: fetchUsers,
+  });
+
+  const { data: categories, isLoading: isLoadingCategories } = useQuery({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
   });
 
   const headers = [
@@ -108,50 +126,49 @@ const ProductManagementTable = () => {
   };
 
   useEffect(() => {
-    if (products && !isLoading) {
-      if (role === "vendor") {
-        setTableRows(
-          products
-            ?.filter((p) => p.vendorId === vendorId)
-            ?.map((product) => ({
-              productName: product?.name,
-              price: product?.price,
-              instock: product.stock,
-              vendor: product?.vendorId,
-              category: product?.category,
-              imageUrls: product?.imageUrls,
-              status: renderStatusChip(
-                product?.stock > 20
-                  ? "IN STOCK"
-                  : product?.stock > 0 && product?.stock <= 20
-                  ? "RESTOCK STATE"
-                  : "OUT OF STOCK"
-              ),
-              actions: renderActionButtons(product),
-            }))
-        );
-      } else {
-        setTableRows(
-          products?.map((product) => ({
-            productName: product?.name,
-            price: product?.price,
-            instock: product.stock,
-            vendor: product?.vendorId,
-            category: product?.category,
-            imageUrls: product?.imageUrls,
-            status: renderStatusChip(
-              product?.stock > 20
-                ? "IN STOCK"
-                : product?.stock > 0 && product?.stock <= 20
-                ? "RESTOCK STATE"
-                : "OUT OF STOCK"
-            ),
-            actions: renderActionButtons(product),
-          }))
-        );
-      }
+    if (
+      products &&
+      users &&
+      categories &&
+      !isLoadingProducts &&
+      !isLoadingUsers &&
+      !isLoadingCategories
+    ) {
+      // Create a mapping of vendor IDs to usernames
+      const vendorMapping = users.reduce((acc, user) => {
+        if (user.role === 1) acc[user.id] = user.username;
+        return acc;
+      }, {});
+
+      // Create a mapping of category IDs to category names
+      const categoryMapping = categories.reduce((acc, category) => {
+        acc[category.id] = category.name;
+        return acc;
+      }, {});
+
+      const filteredProducts = role === "vendor" 
+        ? products.filter((p) => p.vendorId === vendorId) 
+        : products;
+
+      setTableRows(
+        filteredProducts.map((product) => ({
+          productName: product?.name,
+          price: product?.price,
+          instock: product.stock,
+          vendor: vendorMapping[product?.vendorId] || "Unknown Vendor",
+          category: categoryMapping[product?.category] || "Unknown Category",
+          status: renderStatusChip(
+            product?.stock > 20
+              ? "IN STOCK"
+              : product?.stock > 0 && product?.stock <= 20
+              ? "RESTOCK STATE"
+              : "OUT OF STOCK"
+          ),
+          actions: renderActionButtons(product),
+        }))
+      );
     }
-  }, [products, isLoading, role]);
+  }, [products, users, categories, isLoadingProducts, isLoadingUsers, isLoadingCategories, role, vendorId]);
 
   return (
     <div className=" mt-5">
