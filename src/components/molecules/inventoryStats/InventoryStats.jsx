@@ -13,14 +13,16 @@ const InventoryStats = () => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedResource, setSelectedResource] = useState(null);
   const [tableRows, setTableRows] = useState([]);
+
+  // Fetch active products by category
   const categoricalProducts = async () => {
     const response = await axios.get(
       "https://ecommerceapp2-bold-dew-1540.fly.dev/api/ProductCategory/active-products"
     );
-
     return response.data;
   };
 
+  // Fetch all categories
   const getAllCategories = async () => {
     const response = await axios.get(
       "https://ecommerceapp2-bold-dew-1540.fly.dev/api/ProductCategory"
@@ -28,8 +30,16 @@ const InventoryStats = () => {
     return response.data;
   };
 
+  // Fetch all products
+  const getAllProducts = async () => {
+    const response = await axios.get(
+      "https://liceria.fly.dev/api/Product/all"
+    );
+    return response.data;
+  };
+
   const headers = [
-    { label: "Category Id", key: "id" },
+    // { label: "Category Id", key: "id" },
     { label: "Category Name", key: "name" },
     { label: "Product Count", key: "productCount" },
     { label: "Status", key: "isActive" },
@@ -72,7 +82,6 @@ const InventoryStats = () => {
 
   const renderStatusChip = (status) => {
     let color = "";
-
     switch (status) {
       case "ACTIVE":
         color = "green";
@@ -84,42 +93,60 @@ const InventoryStats = () => {
         color = "gray";
         break;
     }
-
     return <Chip label={status} color={color} />;
   };
 
   const handleRowClick = (row) => {
-    console.log(row)
     setModalContext("VIEW_CATEGORY");
     setSelectedResource(row);
     setOpenModal(true);
   };
 
+  // Query to get all categories
   const { data, isLoading } = useQuery({
     queryKey: ["activeProductsByCategories"],
     queryFn: categoricalProducts,
   });
-
-  const { data: allCatrgories, isLoading: allCategoriesLoading } = useQuery({
+  const { data: allCategories, isLoading: allCategoriesLoading } = useQuery({
     queryKey: ["allCategories"],
     queryFn: getAllCategories,
   });
 
+  // Query to get all products
+  const { data: allProducts, isLoading: allProductsLoading } = useQuery({
+    queryKey: ["allProducts"],
+    queryFn: getAllProducts,
+  });
+
   useEffect(() => {
-    if ((allCatrgories, !allCategoriesLoading)) {
+    if (!allCategoriesLoading && !allProductsLoading) {
+      const productCountByCategory = allProducts.reduce((acc, product) => {
+        const { category } = product;
+        acc[category] = (acc[category] || 0) + 1; // Count products per category
+        return acc;
+      }, {});
+  
+      // Update categoricalData to include productCount
+      setCategoricalData(
+        allCategories.map((category) => ({
+          id: category.id,
+          name: category.name,
+          productCount: productCountByCategory[category.id] || 0, // Use product count by category id
+        }))
+      );
+  
       setTableRows(
-        allCatrgories?.map((cat) => ({
-          id: cat?.id,
-          name: cat?.name,
-          productCount: cat.products.length,
-          products: cat?.products,
-          isActive: renderStatusChip(cat?.isActive ? "ACTIVE" : "INACTIVE"),
-          actions: renderActionButtons(cat),
+        allCategories.map((category) => ({
+          id: category.id,
+          name: category.name,
+          productCount: productCountByCategory[category.id] || 0,
+          isActive: renderStatusChip(category.isActive ? "ACTIVE" : "INACTIVE"),
+          actions: renderActionButtons(category),
         }))
       );
     }
-  }, [allCatrgories, allCategoriesLoading]);
-
+  }, [allCategories, allProducts, allCategoriesLoading, allProductsLoading]);
+  
   useEffect(() => {
     if (data && !isLoading) {
       setCategoricalData(
@@ -130,7 +157,6 @@ const InventoryStats = () => {
       );
     }
   }, [data, isLoading]);
-
   return (
     <div>
       <div
@@ -148,7 +174,7 @@ const InventoryStats = () => {
               buttonType="link"
               onClick={() => {
                 setModalContext("MANAGE_CATEGORIES");
-                setOpenModal(true)
+                setOpenModal(true);
               }}
             />
           )}
@@ -157,7 +183,7 @@ const InventoryStats = () => {
             title="Add New Categories"
             onClick={() => {
               setModalContext("ADD_CATEGORIES");
-              setOpenModal(true)
+              setOpenModal(true);
             }}
           />
         </div>

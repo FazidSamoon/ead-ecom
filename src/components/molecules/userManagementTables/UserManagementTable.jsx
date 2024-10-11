@@ -97,7 +97,7 @@ const UserManagementTable = () => {
       id: user.id,
       username: user.username,
       email: user.email,
-      role: user.role === 0 ? "User" : "Admin",
+      role: user.role === 0 ? "Admin" : user.role === 1 ? "Vendor"  : user.role === 2 ? "CSR" : "User",
       isActive: user.isActive ? "Active" : "Inactive", // Display active status
       createdAt: new Date(user.createdAt)?.toLocaleDateString(),
       actions: renderActionButtons(user),
