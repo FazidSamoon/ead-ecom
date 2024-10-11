@@ -72,7 +72,7 @@ const OrderForms = ({
 
   const editOrder = async (payload) => {
     const response = await axios.put(
-      "https://ecommerceapp-final-notification-config-autumn-night-6820.fly.dev/api/Order/" +
+      "https://liceria.fly.dev/api/Order/" +
         resourceData.id,
       payload
     );
